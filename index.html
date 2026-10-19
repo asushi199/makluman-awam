@@ -45,7 +45,11 @@ h1 { font-weight: 700; font-size: clamp(28px, 6vw, 38px); line-height: 1.12; mar
 .answer { margin-top: 14px; background: var(--good-soft); border: 2px solid var(--good); border-radius: 6px; padding: 16px 18px; }
 .answer .tag { font-family: var(--f-mono); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--good); margin: 0 0 2px; }
 .answer h3 { font-size: 30px; line-height: 1.1; margin: 0 0 6px; }
-.answer p:last-child { margin: 0; }
+.answer p { margin: 0 0 10px; }
+.answer .note { font-size: 15px; color: var(--muted); }
+.answer .srcs-label { font-family: var(--f-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 14px 0 6px; }
+.answer .srcs { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.answer a { color: var(--accent); font-weight: 600; word-break: break-word; }
 
 .detail { margin-top: 18px; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 16px 18px 18px; }
 .detail h2 { font-size: 19px; margin: 0 0 10px; }
@@ -85,7 +89,14 @@ h1 { font-weight: 700; font-size: clamp(28px, 6vw, 38px); line-height: 1.12; mar
   <div class="answer" id="answer" hidden>
     <p class="tag">Jawapan</p>
     <h3>BETUL</h3>
-    <p>Kajian ini benar-benar telah dijalankan.</p>
+    <p>Kajian ini benar-benar telah dijalankan oleh penyelidik dari Universiti Illinois Urbana-Champaign, Universiti Michigan dan Google, dan dibentangkan di IEEE Symposium on Security and Privacy.</p>
+    <p class="note">Peratusan tepat berbeza sedikit mengikut sumber (45% hingga 48% bagi pemacu yang failnya dibuka), sebab itu mesej menyebut "hampir separuh".</p>
+    <p class="srcs-label">Sumber</p>
+    <ul class="srcs">
+      <li><a href="https://threatpost.com/never-trust-a-found-usb-drive-black-hat-demo-shows-why/119653" target="_blank" rel="noopener">Threatpost: demonstrasi di Black Hat</a></li>
+      <li><a href="https://gizmodo.com/study-shows-half-of-abandoned-usb-sticks-get-picked-up-1769816895" target="_blank" rel="noopener">Gizmodo: kira-kira separuh pemacu yang ditinggalkan dikutip</a></li>
+      <li><a href="https://grainger.illinois.edu/news/media-mentions/25473" target="_blank" rel="noopener">Illinois Grainger Engineering: laporan media</a></li>
+    </ul>
   </div>
 
   <p class="foot">Makluman ini dikemas kini pada 19 Oktober 2026.</p>
