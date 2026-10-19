@@ -16,6 +16,8 @@
   --line: #cfd7e0;
   --accent: #1f4f9a;
   --alert: #b3261e;
+  --good: #1d7a4a;
+  --good-soft: #dff2e7;
   --f-display: "Anton", Impact, "Arial Narrow", sans-serif;
   --f-body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
   --f-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
@@ -36,12 +38,14 @@ h1 { font-weight: 700; font-size: clamp(28px, 6vw, 38px); line-height: 1.12; mar
 .msg .src { font-size: 15px; color: var(--muted); }
 .msg .ask { font-weight: 700; }
 
-.actions { margin-top: 20px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.actions { margin-top: 20px; }
 .btn { font: inherit; font-weight: 600; text-align: center; background: var(--surface); color: var(--ink); border: 1.5px solid var(--ink); border-radius: 6px; padding: 12px 14px; cursor: pointer; }
 .btn:hover { background: var(--ink); color: var(--surface); }
-.btn[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
 .btn:focus-visible, summary:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
-.status { min-height: 1.6em; margin: 10px 0 0; font-size: 15px; color: var(--muted); }
+.answer { margin-top: 14px; background: var(--good-soft); border: 2px solid var(--good); border-radius: 6px; padding: 16px 18px; }
+.answer .tag { font-family: var(--f-mono); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--good); margin: 0 0 2px; }
+.answer h3 { font-size: 30px; line-height: 1.1; margin: 0 0 6px; }
+.answer p:last-child { margin: 0; }
 
 details { margin-top: 18px; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; }
 summary { cursor: pointer; font-weight: 700; padding: 14px 18px; list-style: none; display: flex; justify-content: space-between; gap: 12px; }
@@ -50,7 +54,6 @@ summary::after { content: "+"; font-family: var(--f-mono); }
 details[open] summary::after { content: "\2212"; }
 details ul { margin: 0; padding: 0 18px 18px 40px; display: grid; gap: 8px; }
 .foot { margin-top: 28px; font-size: 14px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 12px; }
-@media (max-width: 600px) { .actions { grid-template-columns: minmax(0, 1fr); } }
 </style>
 </head>
 <body>
@@ -68,11 +71,13 @@ details ul { margin: 0; padding: 0 18px 18px 40px; display: grid; gap: 8px; }
   </article>
 
   <div class="actions">
-    <button class="btn" type="button" id="share">Kongsi</button>
-    <button class="btn" type="button" id="save" aria-pressed="false">Simpan</button>
-    <button class="btn" type="button" id="report">Laporkan</button>
+    <button class="btn" type="button" id="answer-btn" aria-expanded="false" aria-controls="answer">Lihat jawapan</button>
   </div>
-  <p class="status" id="status" role="status" aria-live="polite"></p>
+  <div class="answer" id="answer" hidden>
+    <p class="tag">Jawapan</p>
+    <h3>BETUL</h3>
+    <p>Kajian ini benar-benar telah dijalankan.</p>
+  </div>
 
   <details>
     <summary>Baca butiran</summary>
@@ -90,42 +95,13 @@ details ul { margin: 0; padding: 0 18px 18px 40px; display: grid; gap: 8px; }
 
 <script>
 (function () {
-  var status = document.getElementById('status');
-  var saveBtn = document.getElementById('save');
-  var text = document.getElementById('msg').innerText.replace('Diteruskan berkali-kali\n', '').trim();
-  var KEY = 'makluman-disimpan';
-
-  function say(t) { status.textContent = t; }
-
-  try { if (localStorage.getItem(KEY) === '1') { saveBtn.setAttribute('aria-pressed', 'true'); saveBtn.textContent = 'Disimpan'; } } catch (e) {}
-
-  document.getElementById('share').addEventListener('click', function () {
-    var fallback = function () {
-      var ta = document.createElement('textarea');
-      ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
-      document.body.appendChild(ta); ta.select();
-      var ok = false;
-      try { ok = document.execCommand('copy'); } catch (e) {}
-      document.body.removeChild(ta);
-      say(ok ? 'Teks mesej telah disalin. Anda boleh menampalnya kepada kenalan.' : 'Tidak dapat menyalin. Sila salin teks mesej secara manual.');
-    };
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(function () {
-        say('Teks mesej telah disalin. Anda boleh menampalnya kepada kenalan.');
-      }, fallback);
-    } else { fallback(); }
-  });
-
-  saveBtn.addEventListener('click', function () {
-    var on = saveBtn.getAttribute('aria-pressed') !== 'true';
-    saveBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
-    saveBtn.textContent = on ? 'Disimpan' : 'Simpan';
-    try { localStorage.setItem(KEY, on ? '1' : '0'); } catch (e) {}
-    say(on ? 'Makluman disimpan pada peranti ini.' : 'Makluman dibuang daripada simpanan.');
-  });
-
-  document.getElementById('report').addEventListener('click', function () {
-    say('Terima kasih. Laporan anda telah dicatat pada peranti ini.');
+  var btn = document.getElementById('answer-btn');
+  var box = document.getElementById('answer');
+  btn.addEventListener('click', function () {
+    var show = box.hidden;
+    box.hidden = !show;
+    btn.setAttribute('aria-expanded', show ? 'true' : 'false');
+    btn.textContent = show ? 'Sembunyikan jawapan' : 'Lihat jawapan';
   });
 })();
 </script>
